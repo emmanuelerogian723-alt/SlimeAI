@@ -1940,6 +1940,21 @@ async function callAI(messages,sys){
     });
     if(r.ok){const d=await r.json();const c=d.choices?.[0]?.message?.content;if(c)return c;}
   }catch(e){HEALER.log(e);}
+  // Final fallback: STEW backend (always works)
+  try {
+    const lastMsg = messages[messages.length-1]?.content || '';
+    const r = await fetch('https://stew-agent.onrender.com/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: lastMsg }),
+      signal: AbortSignal.timeout(20000)
+    });
+    if (r.ok) {
+      const d = await r.json();
+      const c = d.response;
+      if (c) return c + ' SUGGESTIONS:["Tell me more","Ask another question","Help me with something else"]';
+    }
+  } catch(e) { HEALER.log(e); }
   return'I could not connect right now. Please check your internet and try again. SUGGESTIONS:["Try again","Check connection","Ask something else"]';
 }
 
@@ -3157,7 +3172,7 @@ window.applyPlanTheme = applyPremiumTheme;
 
 
 // ══ MISTRAL KEY ══
-const MISTRAL_KEY = 'YOUR_MISTRAL_API_KEY';
+const MISTRAL_KEY = ''; // Slime Code uses STEW backend
 
 // ══ USER SKILLS SYSTEM ══
 let userSkills = JSON.parse(localStorage.getItem('slime_skills') || '[]');
@@ -3230,29 +3245,16 @@ async function runStewTask(task) {
     }
     throw new Error('STEW backend returned ' + res.status);
   } catch(e) {
-    // Fallback: use Mistral AI directly as STEW
+    // Fallback: use main Slime AI (callAI with STEW persona)
     try {
-      const stewPrompt = 'You are STEW, a multi-agent AI system. You have 100 specialized AI agents at your disposal. A user gives you a task and you coordinate agents to research, analyze, and complete it.\n\nTask: ' + task + '\n\nProvide a comprehensive, well-structured response. Use headers, bullet points, and actionable advice. If it is research, provide key findings. If it is creative, provide the full output. Be thorough but concise.';
-      const res2 = await fetch('https://api.mistral.ai/v1/chat/completions', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + MISTRAL_KEY },
-        body: JSON.stringify({
-          model: 'mistral-large-latest',
-          messages: [{ role: 'system', content: stewPrompt }, { role: 'user', content: task }],
-          max_tokens: 4096, temperature: 0.7
-        }),
-        signal: AbortSignal.timeout(45000)
-      });
-      if (res2.ok) {
-        const d2 = await res2.json();
-        doneAct(a);
-        return d2.choices?.[0]?.message?.content || 'STEW completed but returned no output.';
-      }
-      throw new Error('AI fallback also failed');
+      const stewPrompt = 'You are STEW, a multi-agent AI working inside Slime. You have 41 skills including web browsing, PDF creation, code generation, research, stocks, weather, and more. Complete this task thoroughly:\n\n' + task;
+      const response = await callAI([{role:'user', content: task}], stewPrompt);
+      doneAct(a);
+      return response.replace(/SUGGESTIONS:.*$/s,'').trim();
     } catch(e2) {
       errAct(a);
       HEALER.log(e2);
-      return 'STEW Agent is currently having connectivity issues. Please try again in a moment.\n\nYour task was: ' + task;
+      return 'STEW Agent connectivity issue. Please try again.\n\nTask: ' + task;
     }
   } finally { setStatus('READY'); }
 }
@@ -4014,19 +4016,17 @@ RULES:
 - Make it visually impressive with dark themes when applicable
 - Never mention Mistral, your model, or your training`;
   try {
-    const res = await fetch('https://api.mistral.ai/v1/chat/completions', {
+    // Use STEW backend for code generation
+    const fullPrompt = sysPrompt + '\n\nBuild this: ' + prompt + (scCurrentCode ? '\n\nExisting code to modify:\n' + scCurrentCode : '');
+    const res = await fetch('https://stew-agent.onrender.com/code', {
       method:'POST',
-      headers:{'Content-Type':'application/json','Authorization':'Bearer '+MISTRAL_KEY},
-      body:JSON.stringify({
-        model:'mistral-large-latest',
-        messages:[{role:'system',content:sysPrompt},{role:'user',content:'Build this: '+prompt+(scCurrentCode?'\n\nExisting code to modify:\n'+scCurrentCode:'')},],
-        max_tokens:4096, temperature:0.2
-      }),
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({ description: fullPrompt, language: lang }),
       signal:AbortSignal.timeout(45000)
     });
     if (!res.ok) throw new Error('Slime Code error '+res.status);
     const d = await res.json();
-    let code = d.choices?.[0]?.message?.content || '';
+    let code = d.code || '';
     // Strip markdown code blocks if present
     code = code.replace(/^```[\w]*\n?/,'').replace(/\n?```$/,'').trim();
     scCurrentCode = code;
@@ -4057,21 +4057,16 @@ async function scFix() {
   scThinking = true;
   showToast('🔧 Slime Code is fixing errors...');
   try {
-    const res = await fetch('https://api.mistral.ai/v1/chat/completions', {
+    // Use STEW backend for code fixing
+    const fixPrompt = 'Fix all bugs in this code. Return ONLY the fixed code, no explanations, no markdown.\n\nCode:\n' + code + (errText ? '\n\nErrors:\n' + errText : '');
+    const res = await fetch('https://stew-agent.onrender.com/code', {
       method:'POST',
-      headers:{'Content-Type':'application/json','Authorization':'Bearer '+MISTRAL_KEY},
-      body:JSON.stringify({
-        model:'mistral-large-latest',
-        messages:[
-          {role:'system',content:'You are Slime Code. Fix all bugs and errors in this code. Return ONLY the fixed code, no explanations, no markdown.'},
-          {role:'user',content:'Fix this code:\n'+code+(errText?'\n\nErrors found:\n'+errText:'')}
-        ],
-        max_tokens:4096, temperature:0.1
-      }),
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({ description: fixPrompt, language: scCurrentLang || 'html' }),
       signal:AbortSignal.timeout(40000)
     });
     const d = await res.json();
-    let fixed = d.choices?.[0]?.message?.content||'';
+    let fixed = d.code || '';
     fixed = fixed.replace(/^```[\w]*\n?/,'').replace(/\n?```$/,'').trim();
     const area = document.getElementById('scCodeArea');
     if (area) area.value = fixed;
