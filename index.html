@@ -3171,7 +3171,27 @@ function getSkillContext() {
 // ══ FREE USER LIMITS ══
 
 // ── STEW AGENT ──
-const STEW_URL = 'https://stew-ai.onrender.com'; // Update with your Render URL
+const STEW_URL = 'https://stew-agent.onrender.com'; // LIVE — deployed by MUTYINT
+async function checkStewStatus() {
+  try {
+    const res = await fetch(STEW_URL + '/heartbeat', {method:'GET'});
+    if (res.ok) {
+      const data = await res.json();
+      const statusEl = document.getElementById('stew-status-dot');
+      if (statusEl) {
+        statusEl.textContent = '🟢 STEW ONLINE — Beat #' + data.beat;
+        statusEl.style.color = '#00ff88';
+      }
+    }
+  } catch(e) {
+    const statusEl = document.getElementById('stew-status-dot');
+    if (statusEl) {
+      statusEl.textContent = '🔴 STEW OFFLINE';
+      statusEl.style.color = '#ff4444';
+    }
+  }
+}
+
 async function runStewTask(task) {
   setStatus('STEW THINKING');
   const a = addAct('STEW Agent: ' + task.slice(0,50));
@@ -3753,6 +3773,7 @@ function openStorePage() {
   renderSlimeStore();
 }
 function openStewPage() {
+  checkStewStatus();
   document.querySelectorAll('.page').forEach(p => { p.classList.remove('active'); p.style.display = 'none'; });
   const p = document.getElementById('stewPage');
   if (p) { p.style.display = 'block'; p.classList.add('active'); }
