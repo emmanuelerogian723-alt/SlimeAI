@@ -860,7 +860,7 @@ body.plan-business .ppc-plan{color:#ffaa00;}
     <div class="nav-item" onclick="closeNav();showModal('ppModal')"><span class="nav-ic">🔒</span>Privacy Policy</div>
     <div class="nav-item" onclick="closeNav();showModal('tosModal')"><span class="nav-ic">📄</span>Terms of Service</div>
     <div class="nav-item" id="nav-store" onclick="openStorePage()"><span class="nav-ic">🏪</span>Slime Store</div>
-    <div class="nav-item" id="nav-stew" onclick="openStewPage()"><span class="nav-ic">🤖</span>STEW Agent</div>
+    <div class="nav-item" id="nav-stew" onclick="openStewPage()"><span class="nav-ic">⚡</span>S.T.E.W</div>
     <div class="nav-item" id="nav-slimecode" onclick="openSlimeCode()"><span class="nav-ic">⚡</span>Slime Code</div>
     <div class="nav-item" id="nav-market" onclick="showPage('market')"><span class="nav-ic">🛍️</span>Slime Market</div>
   </div>
@@ -1222,40 +1222,115 @@ body.plan-business .ppc-plan{color:#ffaa00;}
 <div id="stewPage" class="page" style="display:none;padding:1rem;overflow-y:auto;height:100%;">
   <div style="display:flex;align-items:center;gap:.5rem;margin-bottom:.75rem;">
     <button onclick="showPage('chat')" style="background:rgba(0,200,255,.1);border:1px solid var(--accent3);color:var(--accent);border-radius:10px;padding:.4rem .7rem;font-size:.8rem;cursor:pointer;">← Back</button>
+    <span id="stewStatusDot" style="width:8px;height:8px;border-radius:50%;background:#ff4444;display:inline-block;"></span>
+    <span id="stewStatusText" style="font-size:.75rem;opacity:.6;">checking...</span>
   </div>
   <div style="text-align:center;padding:.5rem 0 1rem;">
-    <div style="font-size:2rem">🤖</div>
-    <div style="font-size:1.4rem;font-weight:700;color:var(--accent)">STEW Agent V2</div>
-    <div id="stew-status-dot" style="font-size:.8rem;opacity:.7;margin-top:.25rem">Checking STEW status...</div>
+    <div style="font-size:2.5rem">⚡</div>
+    <div style="font-size:1.5rem;font-weight:900;color:var(--accent);letter-spacing:.05em">S.T.E.W</div>
+    <div style="font-size:.75rem;opacity:.5;letter-spacing:.15em;margin-top:.2rem">SECRET TASK EXECUTION WORKER</div>
+    <div style="font-size:.8rem;opacity:.6;margin-top:.3rem">Real browser • Vision • 100 agents • 60 skills</div>
   </div>
 
-  <div style="background:rgba(0,200,255,.07);border:1px solid var(--accent3);border-radius:16px;padding:1rem;margin-bottom:.75rem;">
-    <textarea id="stewInput" placeholder="Give STEW any task... e.g. Research best universities in Canada\n\nQuick commands:\n  weather Lagos\n  currency 100 USD to NGN\n  stock AAPL\n  browse https://example.com\n  research AI trends 2026\n  pdf Quarterly Report:Content here\n  word Meeting Notes:Notes here\n  create skill Fetch weather alerts\n  skills (list all)\n  status (system info)"
-      style="width:100%;background:transparent;border:none;outline:none;color:var(--text);font-size:.9rem;resize:none;min-height:100px;font-family:inherit;"></textarea>
-    <button onclick="handleStewSmart()" style="width:100%;margin-top:.75rem;background:var(--accent);color:#000;border:none;border-radius:12px;padding:.75rem;font-weight:700;cursor:pointer;">
-      Deploy STEW Agents
-    </button>
+  <!-- TABS -->
+  <div style="display:flex;gap:.4rem;margin-bottom:1rem;overflow-x:auto;padding-bottom:.2rem;">
+    <button onclick="stewTab('task')" id="stab-task" style="flex-shrink:0;background:var(--accent);color:#000;border:none;border-radius:10px;padding:.4rem .85rem;font-weight:700;font-size:.8rem;cursor:pointer;">⚡ Task</button>
+    <button onclick="stewTab('research')" id="stab-research" style="flex-shrink:0;background:rgba(0,200,255,.1);border:1px solid var(--accent3);color:var(--accent);border-radius:10px;padding:.4rem .85rem;font-weight:700;font-size:.8rem;cursor:pointer;">🔍 Research</button>
+    <button onclick="stewTab('browse')" id="stab-browse" style="flex-shrink:0;background:rgba(0,200,255,.1);border:1px solid var(--accent3);color:var(--accent);border-radius:10px;padding:.4rem .85rem;font-weight:700;font-size:.8rem;cursor:pointer;">🌐 Browser</button>
+    <button onclick="stewTab('vision')" id="stab-vision" style="flex-shrink:0;background:rgba(0,200,255,.1);border:1px solid var(--accent3);color:var(--accent);border-radius:10px;padding:.4rem .85rem;font-weight:700;font-size:.8rem;cursor:pointer;">👁️ Vision</button>
+    <button onclick="stewTab('build')" id="stab-build" style="flex-shrink:0;background:rgba(0,200,255,.1);border:1px solid var(--accent3);color:var(--accent);border-radius:10px;padding:.4rem .85rem;font-weight:700;font-size:.8rem;cursor:pointer;">📄 Build</button>
+    <button onclick="stewTab('data')" id="stab-data" style="flex-shrink:0;background:rgba(0,200,255,.1);border:1px solid var(--accent3);color:var(--accent);border-radius:10px;padding:.4rem .85rem;font-weight:700;font-size:.8rem;cursor:pointer;">🌍 Data</button>
   </div>
 
-  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:.5rem;margin-bottom:1rem;">
-    <button onclick="stewQuickAction('weather Lagos')" style="background:rgba(0,200,255,.08);border:1px solid rgba(0,200,255,.2);color:var(--accent);border-radius:10px;padding:.6rem .3rem;font-size:.75rem;cursor:pointer;text-align:center;">🌤️ Weather</button>
-    <button onclick="stewQuickAction('currency 100 USD to NGN')" style="background:rgba(255,200,0,.08);border:1px solid rgba(255,200,0,.2);color:gold;border-radius:10px;padding:.6rem .3rem;font-size:.75rem;cursor:pointer;text-align:center;">💰 Currency</button>
-    <button onclick="stewQuickAction('stock AAPL')" style="background:rgba(0,255,100,.08);border:1px solid rgba(0,255,100,.2);color:#00ff88;border-radius:10px;padding:.6rem .3rem;font-size:.75rem;cursor:pointer;text-align:center;">📈 Stocks</button>
-    <button onclick="stewQuickAction('research AI trends 2026')" style="background:rgba(200,0,255,.08);border:1px solid rgba(200,0,255,.2);color:#cc88ff;border-radius:10px;padding:.6rem .3rem;font-size:.75rem;cursor:pointer;text-align:center;">🔍 Research</button>
-    <button onclick="stewQuickAction('skills')" style="background:rgba(255,100,100,.08);border:1px solid rgba(255,100,100,.2);color:#ff8888;border-radius:10px;padding:.6rem .3rem;font-size:.75rem;cursor:pointer;text-align:center;">🧠 Skills</button>
-    <button onclick="stewQuickAction('status')" style="background:rgba(0,200,255,.08);border:1px solid rgba(0,200,255,.2);color:var(--accent);border-radius:10px;padding:.6rem .3rem;font-size:.75rem;cursor:pointer;text-align:center;">📊 Status</button>
-  </div>
-
-  <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:.6rem .8rem;margin-bottom:.75rem;">
-    <div style="font-size:.7rem;opacity:.5;margin-bottom:.3rem;">STEW V2 CAN ALSO:</div>
-    <div style="font-size:.75rem;opacity:.7;line-height:1.7;">
-      🌐 Browse any website &nbsp; 📄 Create PDFs &nbsp; 📝 Create Word docs<br>
-      📊 Create Excel sheets &nbsp; 📧 Send emails &nbsp; 🔗 Call any API<br>
-      🎓 Deep research &nbsp; 🤖 Create new skills &nbsp; 📥 Download files
+  <!-- TASK TAB -->
+  <div id="stew-tab-task" style="">
+    <div style="background:rgba(0,200,255,.07);border:1px solid var(--accent3);border-radius:16px;padding:1rem;margin-bottom:.75rem;">
+      <textarea id="stewInput" placeholder="Give S.T.E.W any task...&#10;e.g. Research best AI tools in 2026&#10;e.g. Browse google.com and tell me what you see&#10;e.g. Write a Python script to sort a list"
+        style="width:100%;background:transparent;border:none;outline:none;color:var(--text);font-size:.95rem;resize:none;min-height:90px;"></textarea>
+      <div style="display:flex;gap:.5rem;margin-top:.75rem;">
+        <button onclick="handleStewTask()" style="flex:1;background:var(--accent);color:#000;border:none;border-radius:12px;padding:.75rem;font-weight:700;cursor:pointer;">⚡ Execute Task</button>
+        <button onclick="handleStewAllAgents()" style="background:rgba(0,200,255,.15);border:1px solid var(--accent3);color:var(--accent);border:none;border-radius:12px;padding:.75rem .9rem;cursor:pointer;font-size:.8rem;" title="Deploy all 100 agents">🤖×100</button>
+      </div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.4rem;margin-bottom:.75rem;">
+      <button onclick="quickStew('Research the latest AI news today')" style="background:rgba(0,200,255,.07);border:1px solid var(--accent3);color:var(--text);border-radius:10px;padding:.5rem;font-size:.75rem;cursor:pointer;">📰 AI News</button>
+      <button onclick="quickStew('What is the weather in Lagos Nigeria right now?')" style="background:rgba(0,200,255,.07);border:1px solid var(--accent3);color:var(--text);border-radius:10px;padding:.5rem;font-size:.75rem;cursor:pointer;">🌤️ Lagos Weather</button>
+      <button onclick="quickStew('Convert 100 USD to NGN at current rates')" style="background:rgba(0,200,255,.07);border:1px solid var(--accent3);color:var(--text);border-radius:10px;padding:.5rem;font-size:.75rem;cursor:pointer;">💱 USD to NGN</button>
+      <button onclick="quickStew('Write Python code to scrape a webpage')" style="background:rgba(0,200,255,.07);border:1px solid var(--accent3);color:var(--text);border-radius:10px;padding:.5rem;font-size:.75rem;cursor:pointer;">💻 Python Code</button>
     </div>
   </div>
 
-  <div id="stewOutput" style="background:rgba(0,0,0,.3);border-radius:12px;padding:1rem;min-height:100px;white-space:pre-wrap;font-size:.9rem;line-height:1.6;color:var(--text);"></div>
+  <!-- RESEARCH TAB -->
+  <div id="stew-tab-research" style="display:none;">
+    <div style="background:rgba(0,200,255,.07);border:1px solid var(--accent3);border-radius:16px;padding:1rem;margin-bottom:.75rem;">
+      <input id="stewResearchInput" placeholder="Topic to research deeply... e.g. best crypto investments 2026"
+        style="width:100%;background:transparent;border:none;outline:none;color:var(--text);font-size:.95rem;padding:.3rem 0;"/>
+      <button onclick="handleStewResearch()" style="width:100%;margin-top:.75rem;background:var(--accent);color:#000;border:none;border-radius:12px;padding:.75rem;font-weight:700;cursor:pointer;">🔍 Deep Research</button>
+    </div>
+  </div>
+
+  <!-- BROWSER TAB -->
+  <div id="stew-tab-browse" style="display:none;">
+    <div style="background:rgba(0,200,255,.07);border:1px solid var(--accent3);border-radius:16px;padding:1rem;margin-bottom:.75rem;">
+      <input id="stewBrowseUrl" placeholder="URL to browse... e.g. https://bbc.com"
+        style="width:100%;background:transparent;border:none;outline:none;color:var(--text);font-size:.95rem;padding:.3rem 0;margin-bottom:.5rem;border-bottom:1px solid rgba(0,200,255,.2);"/>
+      <input id="stewBrowseQuestion" placeholder="What do you want to know? (optional)"
+        style="width:100%;background:transparent;border:none;outline:none;color:var(--text);font-size:.9rem;padding:.3rem 0;margin-top:.5rem;"/>
+      <div style="display:flex;gap:.5rem;margin-top:.75rem;">
+        <button onclick="handleStewBrowse()" style="flex:1;background:var(--accent);color:#000;border:none;border-radius:12px;padding:.75rem;font-weight:700;cursor:pointer;">🌐 Browse</button>
+        <button onclick="handleStewScreenshot()" style="background:rgba(0,200,255,.15);border:1px solid var(--accent3);color:var(--accent);border-radius:12px;padding:.75rem .9rem;cursor:pointer;font-size:.8rem;">📸 Screenshot</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- VISION TAB -->
+  <div id="stew-tab-vision" style="display:none;">
+    <div style="background:rgba(0,200,255,.07);border:1px solid var(--accent3);border-radius:16px;padding:1rem;margin-bottom:.75rem;">
+      <input id="stewVisionUrl" placeholder="Image URL to analyze... e.g. https://example.com/photo.jpg"
+        style="width:100%;background:transparent;border:none;outline:none;color:var(--text);font-size:.9rem;padding:.3rem 0;margin-bottom:.5rem;border-bottom:1px solid rgba(0,200,255,.2);"/>
+      <input id="stewVisionQ" placeholder="What do you want to know about this image?"
+        style="width:100%;background:transparent;border:none;outline:none;color:var(--text);font-size:.9rem;padding:.3rem 0;margin-top:.5rem;"/>
+      <div style="display:flex;gap:.5rem;margin-top:.75rem;">
+        <button onclick="handleStewVision()" style="flex:1;background:var(--accent);color:#000;border:none;border-radius:12px;padding:.75rem;font-weight:700;cursor:pointer;">👁️ Analyze Image</button>
+        <button onclick="handleStewOCR()" style="background:rgba(0,200,255,.15);border:1px solid var(--accent3);color:var(--accent);border-radius:12px;padding:.75rem .9rem;cursor:pointer;font-size:.8rem;">📝 OCR</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- BUILD TAB -->
+  <div id="stew-tab-build" style="display:none;">
+    <div style="background:rgba(0,200,255,.07);border:1px solid var(--accent3);border-radius:16px;padding:1rem;margin-bottom:.75rem;">
+      <input id="stewBuildTitle" placeholder="Document/Website title..."
+        style="width:100%;background:transparent;border:none;outline:none;color:var(--text);font-size:.9rem;padding:.3rem 0;border-bottom:1px solid rgba(0,200,255,.2);margin-bottom:.5rem;"/>
+      <textarea id="stewBuildContent" placeholder="Content / description..."
+        style="width:100%;background:transparent;border:none;outline:none;color:var(--text);font-size:.9rem;resize:none;min-height:60px;margin-top:.5rem;"></textarea>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.4rem;margin-top:.75rem;">
+        <button onclick="handleStewBuild('pdf')" style="background:rgba(255,80,80,.15);border:1px solid rgba(255,80,80,.3);color:#ff8080;border-radius:10px;padding:.6rem;font-size:.75rem;cursor:pointer;font-weight:700;">📄 PDF</button>
+        <button onclick="handleStewBuild('word')" style="background:rgba(0,100,255,.15);border:1px solid rgba(0,100,255,.3);color:#6090ff;border-radius:10px;padding:.6rem;font-size:.75rem;cursor:pointer;font-weight:700;">📝 Word</button>
+        <button onclick="handleStewBuild('website')" style="background:rgba(0,200,100,.15);border:1px solid rgba(0,200,100,.3);color:#00cc66;border-radius:10px;padding:.6rem;font-size:.75rem;cursor:pointer;font-weight:700;">🌐 Website</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- DATA TAB -->
+  <div id="stew-tab-data" style="display:none;">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-bottom:.75rem;">
+      <button onclick="handleStewWeather()" style="background:rgba(0,200,255,.07);border:1px solid var(--accent3);color:var(--text);border-radius:12px;padding:.8rem;font-size:.8rem;cursor:pointer;">🌤️ Weather</button>
+      <button onclick="handleStewCurrency()" style="background:rgba(0,200,255,.07);border:1px solid var(--accent3);color:var(--text);border-radius:12px;padding:.8rem;font-size:.8rem;cursor:pointer;">💱 Currency</button>
+      <button onclick="handleStewStock()" style="background:rgba(0,200,255,.07);border:1px solid var(--accent3);color:var(--text);border-radius:12px;padding:.8rem;font-size:.8rem;cursor:pointer;">📈 Stock Price</button>
+      <button onclick="handleStewNews()" style="background:rgba(0,200,255,.07);border:1px solid var(--accent3);color:var(--text);border-radius:12px;padding:.8rem;font-size:.8rem;cursor:pointer;">📰 Live News</button>
+    </div>
+    <div id="stew-data-inputs" style="background:rgba(0,200,255,.07);border:1px solid var(--accent3);border-radius:16px;padding:1rem;display:none;">
+      <input id="stewDataInput" placeholder="" style="width:100%;background:transparent;border:none;outline:none;color:var(--text);font-size:.95rem;"/>
+      <button onclick="handleStewDataSubmit()" style="width:100%;margin-top:.75rem;background:var(--accent);color:#000;border:none;border-radius:12px;padding:.75rem;font-weight:700;cursor:pointer;">Get Data</button>
+    </div>
+  </div>
+
+  <!-- OUTPUT -->
+  <div id="stewOutput" style="background:rgba(0,0,0,.3);border:1px solid rgba(0,200,255,.08);border-radius:12px;padding:1rem;min-height:100px;white-space:pre-wrap;font-size:.9rem;line-height:1.7;color:var(--text);margin-top:.75rem;display:none;"></div>
+  <div id="stewDownload" style="display:none;margin-top:.5rem;">
+    <a id="stewDownloadLink" href="#" style="display:block;background:rgba(0,200,100,.15);border:1px solid rgba(0,200,100,.3);color:#00cc66;border-radius:10px;padding:.75rem;text-align:center;font-weight:700;font-size:.85rem;text-decoration:none;">⬇️ Download File</a>
+  </div>
 </div>
 <div id="coinModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:99999;align-items:center;justify-content:center;" onclick="if(event.target===this)closeCoinModal()">
   <div style="background:var(--bg2);border:1px solid var(--accent3);border-radius:20px;padding:1.5rem;max-width:400px;width:92%;max-height:85vh;overflow-y:auto;">
@@ -1940,21 +2015,6 @@ async function callAI(messages,sys){
     });
     if(r.ok){const d=await r.json();const c=d.choices?.[0]?.message?.content;if(c)return c;}
   }catch(e){HEALER.log(e);}
-  // Final fallback: STEW backend (always works)
-  try {
-    const lastMsg = messages[messages.length-1]?.content || '';
-    const r = await fetch('https://stew-agent.onrender.com/chat', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message: lastMsg }),
-      signal: AbortSignal.timeout(20000)
-    });
-    if (r.ok) {
-      const d = await r.json();
-      const c = d.response;
-      if (c) return c + ' SUGGESTIONS:["Tell me more","Ask another question","Help me with something else"]';
-    }
-  } catch(e) { HEALER.log(e); }
   return'I could not connect right now. Please check your internet and try again. SUGGESTIONS:["Try again","Check connection","Ask something else"]';
 }
 
@@ -3172,7 +3232,7 @@ window.applyPlanTheme = applyPremiumTheme;
 
 
 // ══ MISTRAL KEY ══
-const MISTRAL_KEY = ''; // Slime Code uses STEW backend
+const MISTRAL_KEY = 'YOUR_MISTRAL_API_KEY';
 
 // ══ USER SKILLS SYSTEM ══
 let userSkills = JSON.parse(localStorage.getItem('slime_skills') || '[]');
@@ -3206,57 +3266,43 @@ function getSkillContext() {
 // ══ FREE USER LIMITS ══
 
 // ── STEW AGENT ──
-const STEW_URL = 'https://stew-agent.onrender.com'; // LIVE — deployed by MUTYINT
-async function checkStewStatus() {
-  try {
-    const res = await fetch(STEW_URL + '/heartbeat', {method:'GET'});
-    if (res.ok) {
-      const data = await res.json();
-      const statusEl = document.getElementById('stew-status-dot');
-      if (statusEl) {
-        statusEl.textContent = '🟢 STEW ONLINE — Beat #' + data.beat;
-        statusEl.style.color = '#00ff88';
-      }
-    }
-  } catch(e) {
-    const statusEl = document.getElementById('stew-status-dot');
-    if (statusEl) {
-      statusEl.textContent = '🔴 STEW OFFLINE';
-      statusEl.style.color = '#ff4444';
-    }
-  }
-}
+const STEW_URL = 'https://stew-agent.onrender.com'; // S.T.E.W — Secret Task Execution Worker
 
 async function runStewTask(task) {
-  setStatus('STEW THINKING');
-  const a = addAct('STEW Agent: ' + task.slice(0,50));
-  // First try the STEW backend
+  setStatus('S.T.E.W EXECUTING');
+  const a = addAct('S.T.E.W: ' + task.slice(0,50));
   try {
     const res = await fetch(STEW_URL + '/task', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ task: task }),
-      signal: AbortSignal.timeout(15000)
+      body: JSON.stringify({ task }),
+      signal: AbortSignal.timeout(30000)
     });
     if (res.ok) {
       const d = await res.json();
       doneAct(a);
+      setStatus('READY');
       return d.output || d.response || JSON.stringify(d);
     }
-    throw new Error('STEW backend returned ' + res.status);
+    throw new Error('S.T.E.W returned ' + res.status);
   } catch(e) {
-    // Fallback: use main Slime AI (callAI with STEW persona)
+    errAct(a);
+    HEALER.log(e);
+    setStatus('READY');
+    // Graceful fallback — use AI chat endpoint
     try {
-      const stewPrompt = 'You are STEW, a multi-agent AI working inside Slime. You have 41 skills including web browsing, PDF creation, code generation, research, stocks, weather, and more. Complete this task thoroughly:\n\n' + task;
-      const response = await callAI([{role:'user', content: task}], stewPrompt);
-      doneAct(a);
-      return response.replace(/SUGGESTIONS:.*$/s,'').trim();
-    } catch(e2) {
-      errAct(a);
-      HEALER.log(e2);
-      return 'STEW Agent connectivity issue. Please try again.\n\nTask: ' + task;
-    }
-  } finally { setStatus('READY'); }
+      const res2 = await fetch(STEW_URL + '/chat', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ message: task }),
+        signal: AbortSignal.timeout(20000)
+      });
+      if (res2.ok) {
+        const d2 = await res2.json();
+        return d2.response || 'Task processed.';
+      }
+    } catch(e2) {}
+    return 'S.T.E.W is starting up (Render free tier sleeps). Wait 30 seconds and try again.\n\nYour task: ' + task;
+  }
 }
 
 async function stewSearch(query) {
@@ -3276,421 +3322,297 @@ async function stewSearch(query) {
   return '';
 }
 
+// ═══════════════════════════════════════════
+// S.T.E.W v3.0 — Secret Task Execution Worker
+// ═══════════════════════════════════════════
 
-// ══ STEW V2 UPGRADED FUNCTIONS — MUTYINT ══
+let _stewDataMode = '';
 
-async function stewBrowse(url) {
-  try {
-    const res = await fetch(STEW_URL + '/browse/navigate', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ url: url }),
-      signal: AbortSignal.timeout(20000)
+function stewTab(name) {
+  ['task','research','browse','vision','build','data'].forEach(t => {
+    const el = document.getElementById('stew-tab-' + t);
+    const btn = document.getElementById('stab-' + t);
+    if (el) el.style.display = t === name ? '' : 'none';
+    if (btn) {
+      btn.style.background = t === name ? 'var(--accent)' : 'rgba(0,200,255,.1)';
+      btn.style.color = t === name ? '#000' : 'var(--accent)';
+      btn.style.border = t === name ? 'none' : '1px solid var(--accent3)';
+    }
+  });
+}
+
+function stewShow(text, downloadUrl) {
+  const out = document.getElementById('stewOutput');
+  const dl = document.getElementById('stewDownload');
+  const dlLink = document.getElementById('stewDownloadLink');
+  if (out) { out.textContent = text; out.style.display = ''; }
+  if (dl && dlLink && downloadUrl) {
+    dlLink.href = STEW_URL + downloadUrl;
+    dlLink.target = '_blank';
+    dl.style.display = '';
+  } else if (dl) { dl.style.display = 'none'; }
+}
+
+function stewLoading(msg) {
+  const out = document.getElementById('stewOutput');
+  if (out) { out.innerHTML = '<span style="opacity:.5">⚡ ' + msg + '</span>'; out.style.display = ''; }
+  const dl = document.getElementById('stewDownload');
+  if (dl) dl.style.display = 'none';
+}
+
+function quickStew(task) {
+  const inp = document.getElementById('stewInput');
+  if (inp) { inp.value = task; }
+  handleStewTask();
+}
+
+// Check S.T.E.W status on page open
+function checkStewStatus() {
+  const dot = document.getElementById('stewStatusDot');
+  const txt = document.getElementById('stewStatusText');
+  fetch(STEW_URL + '/heartbeat', { signal: AbortSignal.timeout(8000) })
+    .then(r => r.json())
+    .then(d => {
+      if (dot) dot.style.background = '#00ff88';
+      if (txt) txt.textContent = 'online v' + (d.version || '3.0');
+    })
+    .catch(() => {
+      if (dot) dot.style.background = '#ff4444';
+      if (txt) txt.textContent = 'offline — retrying';
+      setTimeout(checkStewStatus, 30000);
     });
-    if (res.ok) {
-      const d = await res.json();
-      if (d.success) {
-        let out = 'PAGE: ' + (d.title || 'No title') + '\n';
-        out += 'URL: ' + (d.url || url) + '\n\n';
-        out += (d.text || '').substring(0, 2000) + '\n\n';
-        if (d.links && d.links.length) {
-          out += 'LINKS FOUND: ' + d.links.length + '\n';
-          d.links.slice(0, 5).forEach(l => out += '  - ' + (l.text || l.href) + '\n');
-        }
-        return out;
-      }
-      return 'Could not browse: ' + (d.error || 'Unknown error');
-    }
-    return 'STEW browse failed (status ' + res.status + ')';
-  } catch(e) { return 'Browse error: ' + e.message; }
 }
 
-async function stewCurrency(amount, fromCur, toCur) {
-  try {
-    const res = await fetch(STEW_URL + '/finance/currency', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ amount: parseFloat(amount), from_currency: fromCur, to_currency: toCur }),
-      signal: AbortSignal.timeout(10000)
-    });
-    if (res.ok) {
-      const d = await res.json();
-      if (d.success) {
-        return amount + ' ' + fromCur + ' = ' + d.converted + ' ' + toCur + '\nRate: 1 ' + fromCur + ' = ' + d.rate + ' ' + toCur;
-      }
-      return 'Currency error: ' + (d.error || 'Unknown');
-    }
-    return 'STEW currency failed';
-  } catch(e) { return 'Error: ' + e.message; }
-}
-
-async function stewWeather(city) {
-  try {
-    const res = await fetch(STEW_URL + '/weather', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ city: city }),
-      signal: AbortSignal.timeout(10000)
-    });
-    if (res.ok) {
-      const d = await res.json();
-      if (d.success) {
-        let out = 'WEATHER: ' + city + '\n';
-        out += 'Temperature: ' + d.temperature + '\n';
-        out += 'Feels like: ' + d.feels_like + '\n';
-        out += 'Condition: ' + d.description + '\n';
-        out += 'Humidity: ' + d.humidity + '\n';
-        out += 'Wind: ' + d.wind_speed;
-        return out;
-      }
-      return 'Weather error: ' + (d.error || 'Unknown');
-    }
-    return 'STEW weather failed';
-  } catch(e) { return 'Error: ' + e.message; }
-}
-
-async function stewStock(symbol) {
-  try {
-    const res = await fetch(STEW_URL + '/finance/stock', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ symbol: symbol }),
-      signal: AbortSignal.timeout(10000)
-    });
-    if (res.ok) {
-      const d = await res.json();
-      if (d.success) {
-        let out = 'STOCK: ' + symbol + '\n';
-        out += 'Price: ' + d.currency + d.price + '\n';
-        out += 'Previous Close: ' + d.currency + d.previous_close + '\n';
-        out += 'Exchange: ' + d.exchange;
-        return out;
-      }
-      return 'Stock error: ' + (d.error || 'Unknown');
-    }
-    return 'STEW stock failed';
-  } catch(e) { return 'Error: ' + e.message; }
-}
-
-async function stewDeepResearch(topic) {
-  setStatus('STEW RESEARCHING');
-  const a = addAct('STEW Deep Research: ' + topic.slice(0, 50));
-  try {
-    const res = await fetch(STEW_URL + '/research/deep', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ topic: topic }),
-      signal: AbortSignal.timeout(45000)
-    });
-    if (res.ok) {
-      const d = await res.json();
-      doneAct(a);
-      if (d.success) {
-        let out = 'DEEP RESEARCH: ' + topic + '\n\n';
-        out += 'Sources searched: ' + d.sources_searched + '\n';
-        out += 'Sources scraped: ' + d.sources_scraped + '\n\n';
-        out += 'FINDINGS:\n';
-        if (d.findings) {
-          d.findings.forEach((f, i) => {
-            out += (i+1) + '. ' + (f.title || f.source) + '\n';
-            out += '   ' + (f.summary || '').substring(0, 200) + '\n\n';
-          });
-        }
-        out += 'SYNTHESIS:\n' + (d.synthesis || '');
-        return out;
-      }
-      return 'Research error: ' + (d.error || 'Unknown');
-    }
-    doneAct(a);
-    return 'STEW research failed (status ' + res.status + ')';
-  } catch(e) {
-    errAct(a);
-    return 'Research error: ' + e.message;
-  } finally { setStatus('READY'); }
-}
-
-async function stewCreatePDF(title, content) {
-  try {
-    const res = await fetch(STEW_URL + '/build/document', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ title: title, content: content, doc_type: 'pdf' }),
-      signal: AbortSignal.timeout(20000)
-    });
-    if (res.ok) {
-      const d = await res.json();
-      if (d.success) {
-        return 'PDF created: ' + d.filename + '\nDownload: ' + STEW_URL + (d.download_url || '/files');
-      }
-      return 'PDF error: ' + (d.error || 'Unknown');
-    }
-    return 'STEW PDF failed';
-  } catch(e) { return 'Error: ' + e.message; }
-}
-
-async function stewCreateWord(title, content) {
-  try {
-    const res = await fetch(STEW_URL + '/build/word', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ title: title, content: content }),
-      signal: AbortSignal.timeout(20000)
-    });
-    if (res.ok) {
-      const d = await res.json();
-      if (d.success) {
-        return 'Word doc created: ' + d.filename + '\nDownload: ' + STEW_URL + (d.download_url || '/files');
-      }
-      return 'Word error: ' + (d.error || 'Unknown');
-    }
-    return 'STEW Word failed';
-  } catch(e) { return 'Error: ' + e.message; }
-}
-
-async function stewCreateExcel(name, data) {
-  try {
-    const res = await fetch(STEW_URL + '/build/spreadsheet', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name: name, data: data }),
-      signal: AbortSignal.timeout(20000)
-    });
-    if (res.ok) {
-      const d = await res.json();
-      if (d.success) {
-        return 'Excel created: ' + d.filename + ' (' + d.rows + ' rows)\nDownload: ' + STEW_URL + (d.download_url || '/files');
-      }
-      return 'Excel error: ' + (d.error || 'Unknown');
-    }
-    return 'STEW Excel failed';
-  } catch(e) { return 'Error: ' + e.message; }
-}
-
-async function stewSendEmail(to, subject, body) {
-  try {
-    const res = await fetch(STEW_URL + '/email/send', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ to: to, subject: subject, body: body }),
-      signal: AbortSignal.timeout(15000)
-    });
-    if (res.ok) {
-      const d = await res.json();
-      if (d.success) return 'Email sent successfully to ' + to + '!';
-      return 'Email not sent: ' + (d.message || d.error || 'Check SMTP config on STEW backend');
-    }
-    return 'STEW email failed';
-  } catch(e) { return 'Error: ' + e.message; }
-}
-
-async function stewAutoCreateSkill(taskDesc) {
-  setStatus('STEW LEARNING');
-  const a = addAct('STEW creating new skill: ' + taskDesc.slice(0, 40));
-  try {
-    const res = await fetch(STEW_URL + '/skills/auto-create', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ task: taskDesc }),
-      signal: AbortSignal.timeout(30000)
-    });
-    if (res.ok) {
-      const d = await res.json();
-      doneAct(a);
-      if (d.success) {
-        let out = 'NEW SKILL CREATED!\n\n';
-        out += 'Name: ' + d.skill_name + '\n';
-        out += 'Purpose: ' + d.description + '\n';
-        out += 'Status: ' + d.status + '\n\n';
-        out += 'CODE STEW WROTE:\n' + (d.code || '').substring(0, 500);
-        return out;
-      }
-      return 'Skill creation error: ' + (d.error || 'Unknown');
-    }
-    doneAct(a);
-    return 'STEW skill creation failed (status ' + res.status + ')';
-  } catch(e) {
-    errAct(a);
-    return 'Error: ' + e.message;
-  } finally { setStatus('READY'); }
-}
-
-async function stewListSkills() {
-  try {
-    const res = await fetch(STEW_URL + '/skills/list', { signal: AbortSignal.timeout(10000) });
-    if (res.ok) {
-      const d = await res.json();
-      let out = 'STEW SKILLS (' + d.total_skills + ' total)\n\n';
-      out += 'BUILT-IN (' + d.builtin_count + '):\n';
-      if (d.builtin_skills) {
-        d.builtin_skills.forEach(s => out += '  - ' + s.name + ': ' + (s.description || '').substring(0, 60) + '\n');
-      }
-      if (d.custom_skills && d.custom_skills.length) {
-        out += '\nCUSTOM (' + d.custom_count + '):\n';
-        d.custom_skills.forEach(s => out += '  - ' + s.name + ' (by ' + s.created_by + ')\n');
-      }
-      return out;
-    }
-    return 'STEW skills list failed';
-  } catch(e) { return 'Error: ' + e.message; }
-}
-
-async function stewGetStatus() {
-  try {
-    const res = await fetch(STEW_URL + '/status', { signal: AbortSignal.timeout(10000) });
-    if (res.ok) {
-      const d = await res.json();
-      let out = 'STEW SYSTEM STATUS\n\n';
-      out += 'Version: ' + d.version + '\n';
-      out += 'Status: ' + d.stew + '\n';
-      out += 'Skills: ' + d.skills_count + '\n';
-      out += 'Custom Skills: ' + d.custom_skills + '\n';
-      out += 'Files: ' + d.files_available + '\n';
-      if (d.heart) {
-        out += 'Heartbeats: ' + d.heart.heartbeats + '\n';
-        out += 'Mood: ' + d.heart.mood + '\n';
-        out += 'Energy: ' + d.heart.energy + '%\n';
-      }
-      return out;
-    }
-    return 'STEW status failed';
-  } catch(e) { return 'Error: ' + e.message; }
-}
-
-// Smart STEW command parser — detects what user wants
-function stewSmartCommand(input) {
-  const cmd = input.toLowerCase().trim();
-  
-  if (cmd.startsWith('browse ') || cmd.startsWith('open ')) {
-    return { type: 'browse', url: input.replace(/^(browse|open)\s+/i, '') };
-  }
-  if (cmd.startsWith('weather ')) {
-    return { type: 'weather', city: input.replace(/^weather\s+/i, '') };
-  }
-  if (cmd.startsWith('currency ') || cmd.startsWith('convert ')) {
-    const parts = input.replace(/^(currency|convert)\s+/i, '').split(/\s+to\s+/i);
-    if (parts.length === 2) {
-      const amt = parts[0].match(/[\d.]+/);
-      const fromC = parts[0].replace(/[\d.\s]+/, '').trim().toUpperCase();
-      return { type: 'currency', amount: amt ? amt[0] : 100, from: fromC, to: parts[1].trim().toUpperCase() };
-    }
-  }
-  if (cmd.startsWith('stock ')) {
-    return { type: 'stock', symbol: input.replace(/^stock\s+/i, '').trim().toUpperCase() };
-  }
-  if (cmd.startsWith('research ')) {
-    return { type: 'research', topic: input.replace(/^research\s+/i, '') };
-  }
-  if (cmd.startsWith('pdf ') || cmd.startsWith('document ')) {
-    const rest = input.replace(/^(pdf|document)\s+/i, '');
-    return { type: 'pdf', title: rest.substring(0, 50), content: rest };
-  }
-  if (cmd.startsWith('word ')) {
-    const rest = input.replace(/^word\s+/i, '');
-    return { type: 'word', title: rest.substring(0, 50), content: rest };
-  }
-  if (cmd.startsWith('excel ')) {
-    return { type: 'excel', name: input.replace(/^excel\s+/i, '').substring(0, 30), data: [['Data'], [input.replace(/^excel\s+/i, '')]] };
-  }
-  if (cmd.startsWith('email ')) {
-    return { type: 'email', raw: input.replace(/^email\s+/i, '') };
-  }
-  if (cmd.startsWith('create skill') || cmd.startsWith('new skill') || cmd.startsWith('learn ')) {
-    return { type: 'auto-skill', task: input.replace(/^(create skill|new skill|learn)\s*/i, '') };
-  }
-  if (cmd === 'skills' || cmd === 'list skills' || cmd === 'stew skills') {
-    return { type: 'list-skills' };
-  }
-  if (cmd === 'status' || cmd === 'stew status' || cmd === 'system status') {
-    return { type: 'status' };
-  }
-  return null; // Not a special command, use regular STEW task
-}
-
-
-function stewQuickAction(cmd) {
-  const input = document.getElementById('stewInput');
-  if (input) {
-    input.value = cmd;
-    handleStewSmart();
-  }
-}
-
-async function handleStewSmart() {
-  const input = document.getElementById('stewInput');
-  const output = document.getElementById('stewOutput');
-  if (!input || !input.value.trim()) { showToast('Please enter a task for STEW'); return; }
-  if (!spendCoins('stew_task')) return;
-  
-  const raw = input.value.trim();
-  input.value = '';
-  
-  if (output) output.innerHTML = '<div style="opacity:.5">STEW processing...</div>';
-  
-  const smart = stewSmartCommand(raw);
-  let result = '';
-  
-  if (smart) {
-    switch(smart.type) {
-      case 'browse':
-        result = await stewBrowse(smart.url);
-        break;
-      case 'weather':
-        result = await stewWeather(smart.city);
-        break;
-      case 'currency':
-        result = await stewCurrency(smart.amount, smart.from, smart.to);
-        break;
-      case 'stock':
-        result = await stewStock(smart.symbol);
-        break;
-      case 'research':
-        result = await stewDeepResearch(smart.topic);
-        break;
-      case 'pdf':
-        result = await stewCreatePDF(smart.title, smart.content);
-        break;
-      case 'word':
-        result = await stewCreateWord(smart.title, smart.content);
-        break;
-      case 'excel':
-        result = await stewCreateExcel(smart.name, smart.data);
-        break;
-      case 'email':
-        result = 'Email format: email to:subject:body\nExample: email test@gmail.com:Hello:This is the body';
-        break;
-      case 'auto-skill':
-        result = await stewAutoCreateSkill(smart.task);
-        break;
-      case 'list-skills':
-        result = await stewListSkills();
-        break;
-      case 'status':
-        result = await stewGetStatus();
-        break;
-      default:
-        result = await runStewTask(raw);
-    }
-  } else {
-    result = await runStewTask(raw);
-  }
-  
-  if (output) output.textContent = result;
-}
+// Override openStewPage to check status
+const _origOpenStew = window.openStewPage;
+window.openStewPage = function() {
+  if (_origOpenStew) _origOpenStew();
+  else showPage('stew');
+  checkStewStatus();
+};
 
 function handleStewTask() {
   const input = document.getElementById('stewInput');
   const output = document.getElementById('stewOutput');
-  if (!input || !input.value.trim()) { showToast('Please enter a task for STEW'); return; }
+  if (!input || !input.value.trim()) { showToast('Enter a task for S.T.E.W'); return; }
   if (!spendCoins('stew_task')) return;
   const task = input.value.trim();
   input.value = '';
-  if (output) output.innerHTML = '<div style="opacity:.5">🤖 STEW agents deploying... analyzing your task...</div>';
-  runStewTask(task).then(result => {
-    if (output) output.textContent = result;
-  }).catch(e => {
-    if (output) output.textContent = 'Error: ' + (e.message || 'STEW task failed');
-    HEALER.log(e);
-  });
+  stewLoading('S.T.E.W executing: ' + task.slice(0,50) + '...');
+  runStewTask(task).then(result => { stewShow(result); })
+    .catch(e => { stewShow('Error: ' + (e.message || 'Task failed')); HEALER.log(e); });
+}
+
+function handleStewAllAgents() {
+  const input = document.getElementById('stewInput');
+  if (!input || !input.value.trim()) { showToast('Enter a task first'); return; }
+  if (!spendCoins('stew_task')) return;
+  const task = input.value.trim();
+  input.value = '';
+  stewLoading('Deploying 100 S.T.E.W agents on: ' + task.slice(0,40) + '...');
+  fetch(STEW_URL + '/agents/all', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({ task, use_all_agents: true }),
+    signal: AbortSignal.timeout(60000)
+  }).then(r => r.json())
+    .then(d => stewShow(d.synthesis || d.output || d.response || JSON.stringify(d)))
+    .catch(e => { stewShow('100-agent deploy failed: ' + e.message); });
+}
+
+function handleStewResearch() {
+  const inp = document.getElementById('stewResearchInput');
+  if (!inp || !inp.value.trim()) { showToast('Enter a research topic'); return; }
+  if (!spendCoins('stew_research')) return;
+  const topic = inp.value.trim();
+  inp.value = '';
+  stewLoading('Deep research in progress: ' + topic.slice(0,50) + '...');
+  fetch(STEW_URL + '/research/deep', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({ topic }),
+    signal: AbortSignal.timeout(45000)
+  }).then(r => r.json())
+    .then(d => stewShow(d.synthesis || d.output || 'Research complete — no synthesis available'))
+    .catch(e => { stewShow('Research failed: ' + e.message); });
+}
+
+function handleStewBrowse() {
+  const url = (document.getElementById('stewBrowseUrl') || {}).value || '';
+  const question = (document.getElementById('stewBrowseQuestion') || {}).value || '';
+  if (!url.trim()) { showToast('Enter a URL to browse'); return; }
+  if (!spendCoins('stew_task')) return;
+  stewLoading('S.T.E.W browsing: ' + url.slice(0,50) + '...');
+  fetch(STEW_URL + '/browse/navigate', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({ url: url.trim(), question: question.trim() || undefined }),
+    signal: AbortSignal.timeout(35000)
+  }).then(r => r.json())
+    .then(d => {
+      let result = '🌐 ' + (d.title || url) + '\n\n';
+      if (d.visual_analysis) result += '👁️ Visual Analysis:\n' + d.visual_analysis + '\n\n';
+      result += '📄 Page Content:\n' + (d.text || d.content || 'No content extracted');
+      stewShow(result);
+    })
+    .catch(e => { stewShow('Browse failed: ' + e.message); });
+}
+
+function handleStewScreenshot() {
+  const url = (document.getElementById('stewBrowseUrl') || {}).value || '';
+  if (!url.trim()) { showToast('Enter a URL first'); return; }
+  if (!spendCoins('stew_task')) return;
+  stewLoading('Taking screenshot of ' + url.slice(0,40) + '...');
+  fetch(STEW_URL + '/browse/screenshot', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({ url: url.trim() }),
+    signal: AbortSignal.timeout(30000)
+  }).then(r => r.json())
+    .then(d => {
+      if (d.success && d.screenshot) {
+        const out = document.getElementById('stewOutput');
+        if (out) {
+          out.innerHTML = '<p style="margin-bottom:.5rem;opacity:.7;">📸 Screenshot of: ' + (d.title || url) + '</p><img src="data:image/png;base64,' + d.screenshot + '" style="width:100%;border-radius:8px;"/>';
+          out.style.display = '';
+        }
+      } else stewShow('Screenshot failed: ' + (d.error || 'Unknown error'));
+    })
+    .catch(e => { stewShow('Screenshot failed: ' + e.message); });
+}
+
+function handleStewVision() {
+  const imgUrl = (document.getElementById('stewVisionUrl') || {}).value || '';
+  const question = (document.getElementById('stewVisionQ') || {}).value || 'Describe everything you see in detail';
+  if (!imgUrl.trim()) { showToast('Enter an image URL'); return; }
+  if (!spendCoins('stew_task')) return;
+  stewLoading('Analyzing image...');
+  fetch(STEW_URL + '/vision/analyze', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({ image_url: imgUrl.trim(), question }),
+    signal: AbortSignal.timeout(25000)
+  }).then(r => r.json())
+    .then(d => stewShow(d.analysis || d.error || 'No analysis returned'))
+    .catch(e => { stewShow('Vision failed: ' + e.message); });
+}
+
+function handleStewOCR() {
+  const imgUrl = (document.getElementById('stewVisionUrl') || {}).value || '';
+  if (!imgUrl.trim()) { showToast('Enter an image URL'); return; }
+  if (!spendCoins('stew_task')) return;
+  stewLoading('Extracting text from image (OCR)...');
+  fetch(STEW_URL + '/vision/ocr', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({ image_url: imgUrl.trim() }),
+    signal: AbortSignal.timeout(20000)
+  }).then(r => r.json())
+    .then(d => stewShow(d.text || d.error || 'No text found'))
+    .catch(e => { stewShow('OCR failed: ' + e.message); });
+}
+
+function handleStewBuild(type) {
+  const title = (document.getElementById('stewBuildTitle') || {}).value || '';
+  const content = (document.getElementById('stewBuildContent') || {}).value || '';
+  if (!title.trim()) { showToast('Enter a title'); return; }
+  if (!spendCoins('stew_task')) return;
+  stewLoading('Building ' + type.toUpperCase() + ': ' + title + '...');
+  const endpoint = type === 'website' ? '/build/website' : '/build/' + type;
+  const body = type === 'website'
+    ? { name: title, description: content || title, color: '#0a0050' }
+    : { title, content: content || title, doc_type: type };
+  fetch(STEW_URL + endpoint, {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify(body),
+    signal: AbortSignal.timeout(20000)
+  }).then(r => r.json())
+    .then(d => {
+      if (d.success && d.download_url) {
+        stewShow('✅ ' + type.toUpperCase() + ' created: ' + (d.filename || title), d.download_url);
+      } else stewShow(d.error || 'Build failed');
+    })
+    .catch(e => { stewShow('Build failed: ' + e.message); });
+}
+
+let _stewDataAction = null;
+function handleStewWeather() {
+  _stewDataAction = 'weather';
+  const di = document.getElementById('stew-data-inputs');
+  const inp = document.getElementById('stewDataInput');
+  if (di) di.style.display = '';
+  if (inp) { inp.placeholder = 'City name... e.g. Lagos, London, Dubai'; inp.value = ''; inp.focus(); }
+}
+function handleStewCurrency() {
+  _stewDataAction = 'currency';
+  const di = document.getElementById('stew-data-inputs');
+  const inp = document.getElementById('stewDataInput');
+  if (di) di.style.display = '';
+  if (inp) { inp.placeholder = 'e.g. 100 USD to NGN'; inp.value = ''; inp.focus(); }
+}
+function handleStewStock() {
+  _stewDataAction = 'stock';
+  const di = document.getElementById('stew-data-inputs');
+  const inp = document.getElementById('stewDataInput');
+  if (di) di.style.display = '';
+  if (inp) { inp.placeholder = 'Stock symbol... e.g. AAPL, TSLA, NVDA'; inp.value = ''; inp.focus(); }
+}
+function handleStewNews() {
+  _stewDataAction = 'news';
+  const di = document.getElementById('stew-data-inputs');
+  const inp = document.getElementById('stewDataInput');
+  if (di) di.style.display = '';
+  if (inp) { inp.placeholder = 'News topic... e.g. Nigeria economy 2026'; inp.value = ''; inp.focus(); }
+}
+
+function handleStewDataSubmit() {
+  const val = (document.getElementById('stewDataInput') || {}).value || '';
+  if (!val.trim() || !_stewDataAction) return;
+  if (!spendCoins('stew_task')) return;
+  stewLoading('Getting ' + _stewDataAction + ' data...');
+
+  if (_stewDataAction === 'weather') {
+    fetch(STEW_URL + '/weather', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ city: val.trim() }), signal: AbortSignal.timeout(12000)
+    }).then(r=>r.json()).then(d => {
+      if (d.success) stewShow('🌤️ ' + d.city + ' Weather\n🌡️ ' + d.temperature + '\n💧 Humidity: ' + d.humidity + '\n💨 Wind: ' + d.wind_speed + '\n☁️ ' + d.description);
+      else stewShow('Weather error: ' + (d.error || 'unavailable'));
+    }).catch(e => stewShow('Failed: ' + e.message));
+
+  } else if (_stewDataAction === 'currency') {
+    const m = val.match(/(\d+(?:\.\d+)?)\s*([A-Za-z]{3})\s*(?:to|in)\s*([A-Za-z]{3})/i);
+    if (!m) { stewShow('Format: 100 USD to NGN'); return; }
+    fetch(STEW_URL + '/finance/currency', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ amount: parseFloat(m[1]), from_currency: m[2], to_currency: m[3] }),
+      signal: AbortSignal.timeout(12000)
+    }).then(r=>r.json()).then(d => {
+      if (d.success) stewShow('💱 ' + d.amount + ' ' + d.from + ' = *' + d.converted.toLocaleString() + ' ' + d.to + '*\nRate: 1 ' + d.from + ' = ' + d.rate.toFixed(4) + ' ' + d.to);
+      else stewShow('Currency error: ' + (d.error || 'unavailable'));
+    }).catch(e => stewShow('Failed: ' + e.message));
+
+  } else if (_stewDataAction === 'stock') {
+    fetch(STEW_URL + '/finance/stock', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ symbol: val.trim().toUpperCase() }), signal: AbortSignal.timeout(12000)
+    }).then(r=>r.json()).then(d => {
+      if (d.success) stewShow('📈 ' + d.symbol + '\nPrice: ' + d.price + '\nChange: ' + d.change + '\nMarket: ' + d.market);
+      else stewShow('Stock error: ' + (d.error || 'unavailable'));
+    }).catch(e => stewShow('Failed: ' + e.message));
+
+  } else if (_stewDataAction === 'news') {
+    fetch(STEW_URL + '/search/news', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ query: val.trim(), num_results: 5 }), signal: AbortSignal.timeout(15000)
+    }).then(r=>r.json()).then(d => {
+      const news = d.news || [];
+      if (news.length) {
+        stewShow('📰 ' + val + ' — Latest News\n\n' + news.map((n,i) => (i+1) + '. ' + n.title + (n.date ? ' (' + n.date + ')' : '') + '\n   ' + (n.body || '')).join('\n\n'));
+      } else stewShow('No news found for: ' + val);
+    }).catch(e => stewShow('Failed: ' + e.message));
+  }
 }
 
 // ── SHAZAM MUSIC ID ──
@@ -4016,17 +3938,19 @@ RULES:
 - Make it visually impressive with dark themes when applicable
 - Never mention Mistral, your model, or your training`;
   try {
-    // Use STEW backend for code generation
-    const fullPrompt = sysPrompt + '\n\nBuild this: ' + prompt + (scCurrentCode ? '\n\nExisting code to modify:\n' + scCurrentCode : '');
-    const res = await fetch('https://stew-agent.onrender.com/code', {
+    const res = await fetch('https://api.mistral.ai/v1/chat/completions', {
       method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({ description: fullPrompt, language: lang }),
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+MISTRAL_KEY},
+      body:JSON.stringify({
+        model:'mistral-large-latest',
+        messages:[{role:'system',content:sysPrompt},{role:'user',content:'Build this: '+prompt+(scCurrentCode?'\n\nExisting code to modify:\n'+scCurrentCode:'')},],
+        max_tokens:4096, temperature:0.2
+      }),
       signal:AbortSignal.timeout(45000)
     });
     if (!res.ok) throw new Error('Slime Code error '+res.status);
     const d = await res.json();
-    let code = d.code || '';
+    let code = d.choices?.[0]?.message?.content || '';
     // Strip markdown code blocks if present
     code = code.replace(/^```[\w]*\n?/,'').replace(/\n?```$/,'').trim();
     scCurrentCode = code;
@@ -4057,16 +3981,21 @@ async function scFix() {
   scThinking = true;
   showToast('🔧 Slime Code is fixing errors...');
   try {
-    // Use STEW backend for code fixing
-    const fixPrompt = 'Fix all bugs in this code. Return ONLY the fixed code, no explanations, no markdown.\n\nCode:\n' + code + (errText ? '\n\nErrors:\n' + errText : '');
-    const res = await fetch('https://stew-agent.onrender.com/code', {
+    const res = await fetch('https://api.mistral.ai/v1/chat/completions', {
       method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({ description: fixPrompt, language: scCurrentLang || 'html' }),
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+MISTRAL_KEY},
+      body:JSON.stringify({
+        model:'mistral-large-latest',
+        messages:[
+          {role:'system',content:'You are Slime Code. Fix all bugs and errors in this code. Return ONLY the fixed code, no explanations, no markdown.'},
+          {role:'user',content:'Fix this code:\n'+code+(errText?'\n\nErrors found:\n'+errText:'')}
+        ],
+        max_tokens:4096, temperature:0.1
+      }),
       signal:AbortSignal.timeout(40000)
     });
     const d = await res.json();
-    let fixed = d.code || '';
+    let fixed = d.choices?.[0]?.message?.content||'';
     fixed = fixed.replace(/^```[\w]*\n?/,'').replace(/\n?```$/,'').trim();
     const area = document.getElementById('scCodeArea');
     if (area) area.value = fixed;
@@ -4189,7 +4118,6 @@ function openStorePage() {
   renderSlimeStore();
 }
 function openStewPage() {
-  checkStewStatus();
   document.querySelectorAll('.page').forEach(p => { p.classList.remove('active'); p.style.display = 'none'; });
   const p = document.getElementById('stewPage');
   if (p) { p.style.display = 'block'; p.classList.add('active'); }
