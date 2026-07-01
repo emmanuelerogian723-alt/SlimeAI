@@ -1,31 +1,29 @@
-# Slime AI - Android App
+# Slime AI v2.5 Ultra — MUTYINT
 
-![Android](https://img.shields.io/badge/Android-5.0%2B-green)
-![Version](https://img.shields.io/badge/Version-3.0-blue)
-![Signed](https://img.shields.io/badge/Signed-V1%2BV2%2BV3-success)
+## Download APK
 
-**Slime AI** is a personal AI assistant app built by MUTYINT.
+👉 [Download SlimeAI_v2.5_Ultra_fixed.apk](https://github.com/emmanuelerogian723-alt/SlimeAI/raw/main/SlimeAI_v2.5_Ultra_fixed.apk)
 
-## Features
-- AI Chat with multiple providers
-- Image Generation
-- Voice Input / Speech-to-Text
-- Web Search Integration
-- Dark glassmorphic UI
+## What's in v2.5 Ultra
 
-## Download
+- ✅ Real AI Chat powered by Groq LLaMA 3
+- ✅ Real PPTX Slide Generator (10 professional slides, downloads to device)
+- ✅ Real PDF Studio (branded cover + formatted content, downloads to device)
+- ✅ AI Image Generation
+- ✅ Web Research Hub
+- ✅ Code Studio (write + fix any code)
+- ✅ CV Builder (professional resume)
+- ✅ YouTube Finder
+- ✅ Website Builder (full HTML)
+- ✅ Slime logo embedded (works offline)
+- ✅ Smooth splash screen animation
 
-[Download APK v3.0](https://github.com/emmanuelerogian723-alt/SlimeAI/releases/download/v3.0/SlimeAI_v3.apk)
+## Install Instructions
 
 1. Download the APK above
-2. Settings > Security > Enable Unknown Sources
-3. Open APK and tap Install
+2. On your Android phone: Settings → Security → Allow Unknown Sources
+3. Open the downloaded APK and tap Install
+4. If Play Protect warns you, tap "Install anyway" — this is a self-built app
 
-## App Details
-- Package: `com.mutyint.slimeai`
-- Min Android: 5.0 (API 21)
-- Target Android: 14 (API 34)
-- Signatures: V1 + V2 + V3
-
-## License
-MIT © 2026 MUTYINT
+## Built by MUTYINT
+Emmanuel Ene Rejoice · multipurposetalentedyounginven@gmail.com
