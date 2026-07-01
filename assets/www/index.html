@@ -842,6 +842,27 @@ body.plan-business .ppc-plan{color:#ffaa00;}
 }
 
 </style>
+
+// ── VOICE ANDROID WEBVIEW FIX ────────────────────────────────────────────────
+(function patchVoice(){
+  // Android WebView sometimes needs webkit prefix
+  if(!window.SpeechRecognition && window.webkitSpeechRecognition){
+    window.SpeechRecognition = window.webkitSpeechRecognition;
+  }
+  if(!window.SpeechGrammarList && window.webkitSpeechGrammarList){
+    window.SpeechGrammarList = window.webkitSpeechGrammarList;
+  }
+  // Fix TTS on Android - some voices need a small delay
+  if(window.speechSynthesis){
+    const orig = window.speechSynthesis.speak.bind(window.speechSynthesis);
+    window.speechSynthesis.speak = function(utt){
+      // Cancel any ongoing speech first to prevent Android TTS queue freeze
+      window.speechSynthesis.cancel();
+      setTimeout(()=>orig(utt), 50);
+    };
+  }
+})();
+
 </head>
 <body class="theme-blue">
 
@@ -4353,7 +4374,28 @@ function scRefreshPreview() {
   if (!preview || !code) return;
   if (lang === 'html' || lang === 'react' || lang === 'css') {
     try {
-      preview.srcdoc = lang==='css' ? `<html><head><style>${code}</style></head><body><p>CSS Preview — Add HTML to see it</p><script>
+      preview.srcdoc = lang==='css' ? `<html><head><style>${code}</style>
+// ── VOICE ANDROID WEBVIEW FIX ────────────────────────────────────────────────
+(function patchVoice(){
+  // Android WebView sometimes needs webkit prefix
+  if(!window.SpeechRecognition && window.webkitSpeechRecognition){
+    window.SpeechRecognition = window.webkitSpeechRecognition;
+  }
+  if(!window.SpeechGrammarList && window.webkitSpeechGrammarList){
+    window.SpeechGrammarList = window.webkitSpeechGrammarList;
+  }
+  // Fix TTS on Android - some voices need a small delay
+  if(window.speechSynthesis){
+    const orig = window.speechSynthesis.speak.bind(window.speechSynthesis);
+    window.speechSynthesis.speak = function(utt){
+      // Cancel any ongoing speech first to prevent Android TTS queue freeze
+      window.speechSynthesis.cancel();
+      setTimeout(()=>orig(utt), 50);
+    };
+  }
+})();
+
+</head><body><p>CSS Preview — Add HTML to see it</p><script>
 
 // ══════════════════════════════════════════════
 // SLIME AI — SPLASH SCREEN ANIMATION ENGINE
@@ -4433,6 +4475,37 @@ function scRefreshPreview() {
 })();
 
 </script>
+
+// ── ANDROID BACK BUTTON & DEVICE READY ───────────────────────────────────────
+document.addEventListener('deviceready', function() {
+  document.addEventListener('backbutton', function(e) {
+    e.preventDefault();
+    // If a modal/overlay is open, close it first
+    const openOverlay = document.querySelector('.overlay.show, .modal-bg.show, [id$="Modal"]:not([style*="display:none"])');
+    if (openOverlay) { openOverlay.style.display = 'none'; return; }
+    // If not on chat page, go to chat
+    const activePage = document.querySelector('.page.on, .page[style*="block"]');
+    if (activePage && activePage.id !== 'page-chat' && activePage.id !== 'appScreen') {
+      if (typeof showPage === 'function') showPage('chat');
+      return;
+    }
+    // On main chat — show exit confirm
+    if (typeof navigator !== 'undefined' && navigator.notification) {
+      navigator.notification.confirm('Exit Slime AI?', function(idx){ if(idx===1) navigator.app.exitApp(); }, 'Slime AI', ['Exit','Cancel']);
+    } else {
+      if (confirm('Exit Slime AI?')) { if (navigator.app) navigator.app.exitApp(); }
+    }
+  }, false);
+}, false);
+
+// Fallback for non-Cordova (browser mode)
+if (typeof window !== 'undefined' && !window.cordova) {
+  window.addEventListener('popstate', function() {
+    const openOverlay = document.querySelector('.overlay.show');
+    if (openOverlay) openOverlay.style.display = 'none';
+  });
+}
+
 </body></html>` : code;
       if (errBox) { errBox.classList.remove('show'); errBox.textContent=''; }
     } catch(e) {
@@ -4519,6 +4592,37 @@ function scRefreshPreview() {
 })();
 
 </script>
+
+// ── ANDROID BACK BUTTON & DEVICE READY ───────────────────────────────────────
+document.addEventListener('deviceready', function() {
+  document.addEventListener('backbutton', function(e) {
+    e.preventDefault();
+    // If a modal/overlay is open, close it first
+    const openOverlay = document.querySelector('.overlay.show, .modal-bg.show, [id$="Modal"]:not([style*="display:none"])');
+    if (openOverlay) { openOverlay.style.display = 'none'; return; }
+    // If not on chat page, go to chat
+    const activePage = document.querySelector('.page.on, .page[style*="block"]');
+    if (activePage && activePage.id !== 'page-chat' && activePage.id !== 'appScreen') {
+      if (typeof showPage === 'function') showPage('chat');
+      return;
+    }
+    // On main chat — show exit confirm
+    if (typeof navigator !== 'undefined' && navigator.notification) {
+      navigator.notification.confirm('Exit Slime AI?', function(idx){ if(idx===1) navigator.app.exitApp(); }, 'Slime AI', ['Exit','Cancel']);
+    } else {
+      if (confirm('Exit Slime AI?')) { if (navigator.app) navigator.app.exitApp(); }
+    }
+  }, false);
+}, false);
+
+// Fallback for non-Cordova (browser mode)
+if (typeof window !== 'undefined' && !window.cordova) {
+  window.addEventListener('popstate', function() {
+    const openOverlay = document.querySelector('.overlay.show');
+    if (openOverlay) openOverlay.style.display = 'none';
+  });
+}
+
 </body></html>`;
   }
   // Auto-detect JS errors in preview
@@ -4721,7 +4825,28 @@ function buildWelcomeEmailHTML(name) {
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Slime AI">
 <link rel="apple-touch-icon" href="https://media.base44.com/images/public/whatsapp/6a3e3c3c76ad435fb80d320b/your_agent/6a3e3c3c76ad435fb80d320c/98741a261_whatsapp_image_1736287281124763.jpg">
-<meta name="viewport" content="width=device-width,initial-scale=1.0"></head>
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+// ── VOICE ANDROID WEBVIEW FIX ────────────────────────────────────────────────
+(function patchVoice(){
+  // Android WebView sometimes needs webkit prefix
+  if(!window.SpeechRecognition && window.webkitSpeechRecognition){
+    window.SpeechRecognition = window.webkitSpeechRecognition;
+  }
+  if(!window.SpeechGrammarList && window.webkitSpeechGrammarList){
+    window.SpeechGrammarList = window.webkitSpeechGrammarList;
+  }
+  // Fix TTS on Android - some voices need a small delay
+  if(window.speechSynthesis){
+    const orig = window.speechSynthesis.speak.bind(window.speechSynthesis);
+    window.speechSynthesis.speak = function(utt){
+      // Cancel any ongoing speech first to prevent Android TTS queue freeze
+      window.speechSynthesis.cancel();
+      setTimeout(()=>orig(utt), 50);
+    };
+  }
+})();
+
+</head>
 <body style="margin:0;padding:0;background:#03050a;font-family:'Segoe UI',Arial,sans-serif;">
 <div style="max-width:600px;margin:0 auto;background:#060d18;border:1px solid rgba(0,200,255,.2);border-radius:20px;overflow:hidden;">
 
@@ -4873,6 +4998,37 @@ function buildWelcomeEmailHTML(name) {
 })();
 
 </script>
+
+// ── ANDROID BACK BUTTON & DEVICE READY ───────────────────────────────────────
+document.addEventListener('deviceready', function() {
+  document.addEventListener('backbutton', function(e) {
+    e.preventDefault();
+    // If a modal/overlay is open, close it first
+    const openOverlay = document.querySelector('.overlay.show, .modal-bg.show, [id$="Modal"]:not([style*="display:none"])');
+    if (openOverlay) { openOverlay.style.display = 'none'; return; }
+    // If not on chat page, go to chat
+    const activePage = document.querySelector('.page.on, .page[style*="block"]');
+    if (activePage && activePage.id !== 'page-chat' && activePage.id !== 'appScreen') {
+      if (typeof showPage === 'function') showPage('chat');
+      return;
+    }
+    // On main chat — show exit confirm
+    if (typeof navigator !== 'undefined' && navigator.notification) {
+      navigator.notification.confirm('Exit Slime AI?', function(idx){ if(idx===1) navigator.app.exitApp(); }, 'Slime AI', ['Exit','Cancel']);
+    } else {
+      if (confirm('Exit Slime AI?')) { if (navigator.app) navigator.app.exitApp(); }
+    }
+  }, false);
+}, false);
+
+// Fallback for non-Cordova (browser mode)
+if (typeof window !== 'undefined' && !window.cordova) {
+  window.addEventListener('popstate', function() {
+    const openOverlay = document.querySelector('.overlay.show');
+    if (openOverlay) openOverlay.style.display = 'none';
+  });
+}
+
 </body>
 </html>`;
 }
@@ -5028,5 +5184,36 @@ async function sendSystemNotification(type, message) {
 })();
 
 </script>
+
+// ── ANDROID BACK BUTTON & DEVICE READY ───────────────────────────────────────
+document.addEventListener('deviceready', function() {
+  document.addEventListener('backbutton', function(e) {
+    e.preventDefault();
+    // If a modal/overlay is open, close it first
+    const openOverlay = document.querySelector('.overlay.show, .modal-bg.show, [id$="Modal"]:not([style*="display:none"])');
+    if (openOverlay) { openOverlay.style.display = 'none'; return; }
+    // If not on chat page, go to chat
+    const activePage = document.querySelector('.page.on, .page[style*="block"]');
+    if (activePage && activePage.id !== 'page-chat' && activePage.id !== 'appScreen') {
+      if (typeof showPage === 'function') showPage('chat');
+      return;
+    }
+    // On main chat — show exit confirm
+    if (typeof navigator !== 'undefined' && navigator.notification) {
+      navigator.notification.confirm('Exit Slime AI?', function(idx){ if(idx===1) navigator.app.exitApp(); }, 'Slime AI', ['Exit','Cancel']);
+    } else {
+      if (confirm('Exit Slime AI?')) { if (navigator.app) navigator.app.exitApp(); }
+    }
+  }, false);
+}, false);
+
+// Fallback for non-Cordova (browser mode)
+if (typeof window !== 'undefined' && !window.cordova) {
+  window.addEventListener('popstate', function() {
+    const openOverlay = document.querySelector('.overlay.show');
+    if (openOverlay) openOverlay.style.display = 'none';
+  });
+}
+
 </body>
 </html>
