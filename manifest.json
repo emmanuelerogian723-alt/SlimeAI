@@ -1,0 +1,28 @@
+{
+  "name": "Slime AI v2.5 Ultra",
+  "short_name": "Slime AI",
+  "description": "AI superapp with chat, slides, voice, maps, and more. Built by MUTYINT.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#03080f",
+  "theme_color": "#00c8ff",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "https://media.base44.com/images/public/whatsapp/6a3e3c3c76ad435fb80d320b/your_agent/6a3e3c3c76ad435fb80d320c/98741a261_whatsapp_image_1736287281124763.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://media.base44.com/images/public/whatsapp/6a3e3c3c76ad435fb80d320b/your_agent/6a3e3c3c76ad435fb80d320c/98741a261_whatsapp_image_1736287281124763.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["productivity", "utilities", "education"],
+  "lang": "en-NG",
+  "dir": "ltr",
+  "scope": "/"
+}
