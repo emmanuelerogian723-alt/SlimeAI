@@ -863,7 +863,7 @@ body.plan-business .ppc-plan{color:#ffaa00;}
   body{font-size:14px}
 }
 </style>
-
+<script>
 // ── VOICE ANDROID WEBVIEW FIX ────────────────────────────────────────────────
 (function patchVoice(){
   // Android WebView sometimes needs webkit prefix
@@ -883,7 +883,7 @@ body.plan-business .ppc-plan{color:#ffaa00;}
     };
   }
 })();
-
+</script>
 </head>
 <body class="theme-blue">
 
@@ -4495,7 +4495,7 @@ function scRefreshPreview() {
   window._hideSplash = hideSplash;
 })();
 
-</script>
+<\/script>
 <script>
 // ── ANDROID BACK BUTTON & DEVICE READY ───────────────────────────────────────
 document.addEventListener('deviceready', function() {
@@ -4526,7 +4526,7 @@ if (typeof window !== 'undefined' && !window.cordova) {
     if (openOverlay) openOverlay.style.display = 'none';
   });
 }
-</script>
+<\/script>
 
 <script>
 if ('serviceWorker' in navigator) {
@@ -4534,7 +4534,7 @@ if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('./sw.js').catch(e => console.log('SW failed', e));
   });
 }
-</script>
+<\/script>
 
 <script>
 // ── MOBILE SAFETY NET: force-show auth if splash hangs ──
@@ -4564,7 +4564,7 @@ if ('serviceWorker' in navigator) {
     }
   }, 3500); // 5 second safety net
 })();
-</script>
+<\/script>
 <script>
 </body></html>` : code;
       if (errBox) { errBox.classList.remove('show'); errBox.textContent=''; }
@@ -4573,7 +4573,7 @@ if ('serviceWorker' in navigator) {
     }
   } else {
     preview.srcdoc = `
-</script>
+<\/script>
 <html><body style="background:#1a1a2e;color:#cef0ff;padding:1rem;font-family:monospace;font-size:.85rem;"><pre>${code.replace(/</g,'&lt;')}</pre><script>
 
 // ══════════════════════════════════════════════
@@ -4653,7 +4653,7 @@ if ('serviceWorker' in navigator) {
   window._hideSplash = hideSplash;
 })();
 
-</script>
+<\/script>
 <script>
 // ── ANDROID BACK BUTTON & DEVICE READY ───────────────────────────────────────
 document.addEventListener('deviceready', function() {
@@ -4684,7 +4684,7 @@ if (typeof window !== 'undefined' && !window.cordova) {
     if (openOverlay) openOverlay.style.display = 'none';
   });
 }
-</script>
+<\/script>
 
 <script>
 if ('serviceWorker' in navigator) {
@@ -4692,7 +4692,7 @@ if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('./sw.js').catch(e => console.log('SW failed', e));
   });
 }
-</script>
+<\/script>
 <script>
 </body></html>`;
   }
@@ -4796,7 +4796,7 @@ function openStewPage() {
   const output = document.getElementById('stewOutput');
   if (output && !output.textContent.trim()) {
     output.innerHTML = '
-</script>
+<\/script>
 <div style="opacity:.7;line-height:1.8">🤖 STEW Agent is ready!\n\nGive me any task above and I will deploy AI agents to research, analyze, and complete it.\n\nExamples:\n• Research best universities in Canada for Nigerian students\n• Write a business plan for a fintech startup\n• Compare phone prices in Nigeria\n• Find remote jobs for Nigerian developers</div>';
   }
 }
@@ -5070,7 +5070,7 @@ function buildWelcomeEmailHTML(name) {
   window._hideSplash = hideSplash;
 })();
 
-</script>
+<\/script>
 <script>
 // ── ANDROID BACK BUTTON & DEVICE READY ───────────────────────────────────────
 document.addEventListener('deviceready', function() {
@@ -5101,7 +5101,7 @@ if (typeof window !== 'undefined' && !window.cordova) {
     if (openOverlay) openOverlay.style.display = 'none';
   });
 }
-</script>
+<\/script>
 
 <script>
 if ('serviceWorker' in navigator) {
@@ -5109,7 +5109,7 @@ if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('./sw.js').catch(e => console.log('SW failed', e));
   });
 }
-</script>
+<\/script>
 <script>
 </body>
 </html>`;
