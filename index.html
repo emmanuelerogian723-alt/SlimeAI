@@ -4565,14 +4565,16 @@ if ('serviceWorker' in navigator) {
   }, 3500); // 5 second safety net
 })();
 </script>
-
+<script>
 </body></html>` : code;
       if (errBox) { errBox.classList.remove('show'); errBox.textContent=''; }
     } catch(e) {
       if (errBox) { errBox.textContent='Preview error: '+e.message; errBox.classList.add('show'); }
     }
   } else {
-    preview.srcdoc = `<html><body style="background:#1a1a2e;color:#cef0ff;padding:1rem;font-family:monospace;font-size:.85rem;"><pre>${code.replace(/</g,'&lt;')}</pre><script>
+    preview.srcdoc = `
+</script>
+<html><body style="background:#1a1a2e;color:#cef0ff;padding:1rem;font-family:monospace;font-size:.85rem;"><pre>${code.replace(/</g,'&lt;')}</pre><script>
 
 // ══════════════════════════════════════════════
 // SLIME AI — SPLASH SCREEN ANIMATION ENGINE
@@ -4691,6 +4693,7 @@ if ('serviceWorker' in navigator) {
   });
 }
 </script>
+<script>
 </body></html>`;
   }
   // Auto-detect JS errors in preview
@@ -4792,7 +4795,9 @@ function openStewPage() {
   // Show info message if STEW backend is offline
   const output = document.getElementById('stewOutput');
   if (output && !output.textContent.trim()) {
-    output.innerHTML = '<div style="opacity:.7;line-height:1.8">🤖 STEW Agent is ready!\n\nGive me any task above and I will deploy AI agents to research, analyze, and complete it.\n\nExamples:\n• Research best universities in Canada for Nigerian students\n• Write a business plan for a fintech startup\n• Compare phone prices in Nigeria\n• Find remote jobs for Nigerian developers</div>';
+    output.innerHTML = '
+</script>
+<div style="opacity:.7;line-height:1.8">🤖 STEW Agent is ready!\n\nGive me any task above and I will deploy AI agents to research, analyze, and complete it.\n\nExamples:\n• Research best universities in Canada for Nigerian students\n• Write a business plan for a fintech startup\n• Compare phone prices in Nigeria\n• Find remote jobs for Nigerian developers</div>';
   }
 }
 
@@ -5105,6 +5110,7 @@ if ('serviceWorker' in navigator) {
   });
 }
 </script>
+<script>
 </body>
 </html>`;
 }
@@ -5179,6 +5185,7 @@ async function sendSystemNotification(type, message) {
   });
 }
 
+</script>
 </script>
 <script>
 
